@@ -86,7 +86,15 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 # Aliases
 alias ls='ls --color'
+
+# Custom alias source
+alias source-zsh='source ~/.zshrc'
+alias source-tmux='tmux source ~/.tmux.conf'
+
+# Custom alias tmux
 alias tmux='tmux -u'
+alias tmux-a='tmux -u a -t'
+alias tmux-new-session='tmux -u new-session -s'
 
 # Cutom aliases git
 alias gs="git status"
