@@ -1,3 +1,8 @@
+if [[ -f "/opt/homebrew/bin/brew" ]] then
+  # If you're using macOS, you'll want this enabled
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
 source $ZSH/oh-my-zsh.sh
@@ -15,6 +20,9 @@ fi
 # Source/Load zinit
 source "${ZINIT_HOME}/zinit.zsh"
 
+# Add in Powerlevel10k
+# zinit ice depth=1; zinit light romkatv/powerlevel10k
+
 plugins=(git nvm vi-mode)
 
 # Zinit plugins
@@ -25,8 +33,13 @@ zinit light zsh-users/zsh-autosuggestions
 zinit light Aloxaf/fzf-tab
 
 # Snippets
+zinit snippet OMZL::git.zsh
 zinit snippet OMZP::git
 zinit snippet OMZP::sudo
+zinit snippet OMZP::archlinux
+zinit snippet OMZP::aws
+zinit snippet OMZP::kubectl
+zinit snippet OMZP::kubectx
 zinit snippet OMZP::command-not-found
 
 # Load completions
@@ -60,6 +73,7 @@ zle -N zle-line-init
 echo -ne '\e[5 q' # Use beam shape cursor on startup.
 preexec() { echo -ne '\e[5 q' ;} # Use beam shape cursor for each new prompt.
 
+#Keybindings
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 bindkey '^[w' kill-region
@@ -112,6 +126,8 @@ alias dexec='docker exec -it'
 
 # Keymap to delete a word
 bindkey "^[^?" backward-kill-word
+
+
 
 ###-begin-npm-completion-###
 #
@@ -181,4 +197,52 @@ elif type compctl &>/dev/null; then
   }
   compctl -K _npm_completion npm
 fi
-###-end-npm-completion-###
+##-end-npm-completion-###
+
+# --- Command execution time in seconds (right prompt) ---
+# Store start time
+preexec() {
+  CMD_START_TIME=$EPOCHREALTIME
+}
+
+# Show elapsed time
+precmd() {
+  if [[ -n "$CMD_START_TIME" ]]; then
+    local elapsed
+    elapsed=$(printf "%.2f" "$(echo "$EPOCHREALTIME - $CMD_START_TIME" | bc)")
+    RPROMPT="%F{yellow}${elapsed}s%f"
+    unset CMD_START_TIME
+  else
+    RPROMPT=""
+  fi
+}
+
+. "$HOME/.local/bin/env"
+
+# Added by Antigravity
+export PATH="/Users/priyanshubartwal/.antigravity/antigravity/bin:$PATH"
+
+# bun completions
+[ -s "/Users/priyanshubartwal/.bun/_bun" ] && source "/Users/priyanshubartwal/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# opencode
+export PATH=/Users/priyanshubartwal/.opencode/bin:$PATH
+alias oc=opencode
+
+# Added by Antigravity
+export PATH="/Users/priyanshubartwal/.antigravity/antigravity/bin:$PATH"
+export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+# Added by Antigravity
+export PATH="/Users/priyanshubartwal/.antigravity/antigravity/bin:$PATH"
+. "/Users/priyanshubartwal/.deno/env"
+
+# Claude code cli
+alias cc=claude
